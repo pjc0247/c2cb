@@ -9,7 +9,7 @@ public:
 	Server();
 	virtual ~Server();
 
-	bool run(int port);
+	void run(int port);
 
 	Client *accept();
 
@@ -19,7 +19,7 @@ public:
 	virtual void close();
 
 private:
-	bool initialize(int port);
+	void initialize(int port);
 	void cleanup();
 
 protected:

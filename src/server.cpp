@@ -9,18 +9,19 @@ Server::Server() :
 Server::~Server(){
 }
 
-bool Server::initialize(int port){
+void Server::initialize(int port){
 	WSAData wsa;
 	SOCKADDR_IN addr;
 
 	/* init winsock */
-	WSAStartup( MAKEWORD(2,2), &wsa );
+	if( WSAStartup( MAKEWORD(2,2), &wsa ) != 0 ){
+		throw WSA_STARTUP_ERR;
+	}
 
 	/* create socket */
 	sock = ::socket(PF_INET, SOCK_STREAM, 0);   
 	if( socket == 0 ){
-		printf("socket error");
-		return false;
+		throw SOCKET_ERR;
 	}
 
 	memset(&addr, 0, sizeof(addr));
@@ -30,28 +31,20 @@ bool Server::initialize(int port){
 
 	/* bind */
 	if( bind(sock, (SOCKADDR*)&addr, sizeof(addr)) == -1 ){
-		printf("bind error");
-		return false;
+		throw BIND_ERR;
 	}
 
 	/* listen */
 	if( listen(sock, BACKLOG_SIZE) == -1 ){
-		printf("listen error");
-		return false;
+		throw LISTEN_ERR;
 	}
-
-	return true;
 }
 void Server::cleanup(){
 	close();
 }
 
-bool Server::run(int port){
-
-	if( initialize(port) == false )
-		return false;
-
-	return true;
+void Server::run(int port){
+	initialize( port );
 }
 
 Client *Server::accept(){

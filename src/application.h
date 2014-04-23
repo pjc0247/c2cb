@@ -8,10 +8,10 @@ public:
 	Application();
 	virtual ~Application();
 
-	bool run(int port);
+	void run(int port);
 	
 private:
-	bool initialize();
+	void initialize();
 	void cleanup();
 
 protected:

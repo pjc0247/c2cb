@@ -15,19 +15,25 @@ Application::Application() :
 Application::~Application(){
 }
 
-bool Application::initialize(){
+void Application::initialize(){
 	server = new Server();
-
-	return true;
 }
 void Application::cleanup(){
 	SAFE_DELETE( server );
 	SAFE_DELETE( target );
 }
 
-bool Application::run(int port){
-	if( initialize() == false )
-		return false;
+void Application::run(int port){
+	initialize();
+
+	try{
+		server->run( port );
+	}
+	catch(const char *msg){
+		printf("[%s]\n", msg);
+
+		return;
+	}
 
 	while( true ){
 		Client *client = server->accept();
@@ -48,6 +54,4 @@ bool Application::run(int port){
 			}
 		}).detach();
 	}
-
-	return true;
 }
